@@ -86,7 +86,9 @@ public class OpenNLPER implements Runnable {
 				}
 				System.out.println("email for " + file.getName() + " ::::::: "
 						+ emails.toString());
-			} catch (IOException | TikaException e) {
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (TikaException e){
 				e.printStackTrace();
 			}
 		}
