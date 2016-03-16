@@ -105,17 +105,15 @@ public class FileExplorer implements FileListFetcherCallback,
 		t.start();
 	}
 
-	public void updateProgress(int present, int total) {
-		 progress = ((present/total)*100);
+	public void updateProgress(final int present, final int total) {
+		 progress = ((present*100/total));
 		 if (!SwingUtilities.isEventDispatchThread()) {
 		     SwingUtilities.invokeLater(new Runnable() {
 		       public void run() {
 		    	   progressBar.setValue(progress);
-		    	   progressBar.invalidate();
 		       }
 		     });
 		   }
         
-		System.out.println("present file:::" + present + " total file" + total);
 	}
 }
