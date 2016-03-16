@@ -96,8 +96,8 @@ public class OpenNLPER implements Runnable {
 					emailsStr = emailsStr+matcher.group()+",";
 				}
 				count++;
-				 String sql = "INSERT INTO "+SQLiteJDBC.RESUME_TABLENAME+" (FileName,FilePath,Email,PhoneNum,isProcessed) " +
-		                   "VALUES ('"+file.getName()+"', '"+file.getAbsolutePath()+"', '"+emailsStr+"', '"+phoneNum+"', 1 );";  
+				 String sql = "INSERT INTO "+SQLiteJDBC.RESUME_TABLENAME+" (FileName,FilePath,Email,PhoneNum,resumeTxt,isProcessed) " +
+		                   "VALUES ('"+file.getName()+"', '"+file.getAbsolutePath()+"', '"+emailsStr+"', '"+phoneNum+"', '', 1 );";  
 				SQLiteJDBC.inserData(sql);
 				_callback.updateProgress(count, total);
 			} catch (IOException e) {

@@ -13,6 +13,7 @@ public class SQLiteJDBC {
 			+ "FileName           TEXT    NOT NULL, "
 			+ " FilePath           TEXT     NOT NULL, "
 			+ " Email           TEXT , " + " PhoneNum           TEXT , "
+			+ " resumeTxt           TEXT, "
 			+ " isSynced           INTEGER DEFAULT 0 , "
 			+ " isProcessed        INTEGER DEFAULT 0 ) ";
 
