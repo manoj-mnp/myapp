@@ -8,6 +8,7 @@ import java.util.Collection;
 import javax.swing.*;
 
 import com.abhimantech.hiree.hireelocal.FileListParser;
+import com.abhimantech.hiree.hireelocal.SQLiteJDBC;
 import com.abhimantech.hiree.hireelocal.callbacks.FileListFetcherCallback;
 
 public class FileExplorer implements FileListFetcherCallback {
@@ -22,6 +23,7 @@ public class FileExplorer implements FileListFetcherCallback {
 	}
 
 	public static void main(String[] args) {
+		SQLiteJDBC.initDatatbase();
 		FileExplorer fileExplorerDemo = new FileExplorer();
 		fileExplorerDemo.showFileChooserDemo();
 	}

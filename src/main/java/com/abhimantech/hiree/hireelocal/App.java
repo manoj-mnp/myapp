@@ -10,8 +10,5 @@ import java.util.Iterator;
  */
 public class App {
 	public static void main(String[] args) {
-		Collection<File> fileList = FileListParser
-				.getAllFilesFromDirectory("/Users/abhimantechnologies/Documents/Parser/resumes/");
-		OpenNLPER.processFiles(fileList);
 	}
 }

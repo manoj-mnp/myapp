@@ -10,9 +10,11 @@ public class SQLiteJDBC {
 	public static final String RESUME_TABLENAME = "Documents";
 	public static final String TABLE_CREATE_SQL = "CREATE TABLE "
 			+ RESUME_TABLENAME + " "
-			+ "( FileName           TEXT    NOT NULL, "
+			+ "(ID INT PRIMARY KEY     NOT NULL,"
+			+ "FileName           TEXT    NOT NULL, "
 			+ " FilePath           TEXT     NOT NULL, "
-			+ " Email           TEXT , " + " PhoneNum           TEXT , "
+			+ " Email           TEXT , " 
+			+ " PhoneNum           TEXT , "
 			+ " isSynced           INTEGER DEFAULT 0 , "
 			+ " isProcessed        INTEGER DEFAULT 0 ) ";
 
