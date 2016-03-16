@@ -65,6 +65,7 @@ public class OpenNLPER implements Runnable {
 		doc = document;
 	}
 	
+	
 	public static void processFiles(Collection<File> fileList){
 		String text = null;
 		for (Iterator<File> iterator = fileList.iterator(); iterator.hasNext();) {
@@ -267,7 +268,8 @@ public class OpenNLPER implements Runnable {
 		}
 
 	}
-
+	
+	
 	public void run() {
 		try {
 			process(doc);

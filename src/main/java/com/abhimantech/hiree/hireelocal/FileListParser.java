@@ -5,25 +5,29 @@ import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
 
-public class FileListParser {
+import com.abhimantech.hiree.hireelocal.callbacks.FileListFetcherCallback;
 
-	/**
-	 * get the list of files from a given directory including subdirectories.
-	 * 
-	 * @param dirPath
-	 */
-	public static Collection<File> getAllFilesFromDirectory(String dirPath) {
+public class FileListParser implements Runnable {
+
+	FileListFetcherCallback _callback;
+	String dirPath;
+
+	public FileListParser(FileListFetcherCallback c, String dirPath) {
+		this._callback = c;
+		this.dirPath = dirPath;
+	}
+
+	public void run() {
 		try {
 			File dir = new File(dirPath);
 			if (dir.exists()) {
 				Collection<File> list = FileUtils.listFiles(dir, new String[] {
 						"pdf", "doc", "docx", "txt" }, true);
-				return list;
+				_callback.callback(list);
 			}
-			return null;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
+			_callback.callback(null);
 		}
 	}
 }
