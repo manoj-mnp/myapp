@@ -13,6 +13,8 @@ import com.abhimantech.hiree.hireelocal.SQLiteJDBC;
 import com.abhimantech.hiree.hireelocal.callbacks.FileListFetcherCallback;
 import com.abhimantech.hiree.hireelocal.callbacks.FileProcessingCallback;
 
+import junit.awtui.ProgressBar;
+
 public class FileExplorer implements FileListFetcherCallback,
 		FileProcessingCallback {
 
@@ -20,6 +22,9 @@ public class FileExplorer implements FileListFetcherCallback,
 	private JLabel headerLabel;
 	private JLabel statusLabel;
 	private JPanel controlPanel;
+	private JProgressBar progressBar;
+	
+	private volatile int progress = 0;
 
 	public FileExplorer() {
 		prepareGUI();
@@ -41,7 +46,7 @@ public class FileExplorer implements FileListFetcherCallback,
 		mainFrame.setSize(width / 2, height / 2);
 		mainFrame.setLocationRelativeTo(null);
 
-		mainFrame.setLayout(new GridLayout(3, 1));
+		mainFrame.setLayout(new GridLayout(4, 1));
 		mainFrame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent windowEvent) {
 				System.exit(0);
@@ -54,10 +59,14 @@ public class FileExplorer implements FileListFetcherCallback,
 
 		controlPanel = new JPanel();
 		controlPanel.setLayout(new FlowLayout());
-
+		
+		progressBar= new JProgressBar(0, 100);
+		progressBar.setBounds(110, 80, 160, 25);
+		
 		mainFrame.add(headerLabel);
 		mainFrame.add(controlPanel);
 		mainFrame.add(statusLabel);
+		mainFrame.add(progressBar);
 		mainFrame.setVisible(true);
 	}
 
@@ -88,12 +97,25 @@ public class FileExplorer implements FileListFetcherCallback,
 	}
 
 	public void callback(Collection<File> fileList) {
+		progressBar.setPreferredSize(new Dimension(200, 30));
+        progressBar.setStringPainted(true);
+        progressBar.setValue(0);
 		statusLabel.setText(fileList.size() + " files found");
 		Thread t = new Thread(new OpenNLPER(FileExplorer.this, fileList));
 		t.start();
 	}
 
 	public void updateProgress(int present, int total) {
+		 progress = ((present/total)*100);
+		 if (!SwingUtilities.isEventDispatchThread()) {
+		     SwingUtilities.invokeLater(new Runnable() {
+		       public void run() {
+		    	   progressBar.setValue(progress);
+		    	   progressBar.invalidate();
+		       }
+		     });
+		   }
+        
 		System.out.println("present file:::" + present + " total file" + total);
 	}
 }
