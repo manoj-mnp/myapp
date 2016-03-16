@@ -62,15 +62,6 @@ public class OpenNLPER implements Runnable {
 		this._fileList = fileList;
 	}
 
-	public OpenNLPER(String document, SentenceDetector sd, NameFinderME mf,
-			TokenizerME wordBreaker) {
-		System.out.println("got doc");
-		this.sd = sd;
-		this.myNameFinder = mf;
-		this.wordBreaker = wordBreaker;
-		doc = document;
-	}
-	
 	
 	public void processFiles(Collection<File> fileList){
 		String text = null;
@@ -131,114 +122,7 @@ public class OpenNLPER implements Runnable {
 		}
 		return phoneNumber;
 	}
-	
-	
-	public static void toHtml() throws IOException, TransformerConfigurationException, SAXException, TikaException
-	{
-	    byte[] file = Files.toByteArray(new File("/Users/abhimantechnologies/Documents/Parser/sillycat-resume-parse/Manoj_Resume_25_mar.pdf"));
-	    AutoDetectParser tikaParser = new AutoDetectParser();
-	    HWPFDocument doc = new HWPFDocument(new FileInputStream(new File("/Users/abhimantechnologies/Documents/Parser/resumes/1421588452637_90578.doc")));
-	    Range r = doc.getRange();
-        ArrayList titles = new ArrayList();
-        for(int i = 0; i<r.numCharacterRuns(); i++)
-        {
-            CharacterRun cr = r.getCharacterRun(i);
-            if(cr.isBold()){
-            	System.out.println("bold:::"+ cr.text());
-            }
-        }
 
-//        try {
-//            for (int i = 0; i < we.getText().length() - 1; i++) {
-//                int startIndex = i;
-//                int endIndex = i + 1;
-//                Range range = new Range(startIndex, endIndex, doc);
-//                CharacterRun cr = range.getCharacterRun(0);
-//
-//                if (cr.isBold() || cr.isItalic() || cr.getUnderlineCode() != 0) {
-//                    while (cr.isBold() || cr.isItalic() || cr.getUnderlineCode() != 0) {
-//                        i++;
-//                        endIndex += 1;
-//                        range = new Range(endIndex, endIndex + 1, doc);
-//                        cr = range.getCharacterRun(0);
-//                    }
-//                    range = new Range(startIndex, endIndex - 1, doc);
-//                    titles.add(range.text());
-//                }
-//
-//            }
-//        }
-//        catch (IndexOutOfBoundsException iobe) {
-//            //sometimes this happens have to find out why.
-//        }
-
-	    ByteArrayOutputStream out = new ByteArrayOutputStream();
-	    SAXTransformerFactory factory = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
-	    TransformerHandler handler = factory.newTransformerHandler();
-	    handler.getTransformer().setOutputProperty(OutputKeys.METHOD, "xml");
-	    handler.getTransformer().setOutputProperty(OutputKeys.INDENT, "yes");
-	    handler.getTransformer().setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-	    handler.setResult(new StreamResult(out));
-	    ExpandedTitleContentHandler handler1 = new ExpandedTitleContentHandler(handler);
-
-	    tikaParser.parse(new ByteArrayInputStream(file), handler1, new Metadata());
-	   // System.out.println(new String(out.toByteArray(), "UTF-8"));
-	}
-
-
-//	private static List<String> getMyDocsFromSomewhere() {
-//		List<String> list = new ArrayList<String>();
-//		// this should return an object that has all the info about the doc you
-//		// want
-//		Tika tika = new Tika();
-//		String text = null;
-//		Parser parser = new AutoDetectParser();
-//		BodyContentHandler handler = new BodyContentHandler();
-//		ParseContext context = new ParseContext();
-//		Metadata metadata = new Metadata();
-//
-//		// fetch the content
-//		try {
-//			text = tika.parseToString(new File(file));
-//			list.add(text);
-//			String input = "manada@fgafa.com";
-//			// int index =text.indexOf("@");
-//			// System.out.println(index);
-//			// String regex =
-//			// ".*(\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\b).*";
-//			// Pattern p = Pattern.compile(EMAIL_PATTERN);
-//			// Matcher m = p.matcher(input);
-//			// System.out.println(m.matches()+ " text ");
-//			Pattern p = Pattern.compile(
-//					"\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b",
-//					Pattern.CASE_INSENSITIVE);
-//			Matcher matcher = p.matcher(text);
-//			Set<String> emails = new HashSet<String>();
-//			while (matcher.find()) {
-//				emails.add(matcher.group());
-//			}
-//			System.out.println(emails.toString());
-//			// if (m.matches()) {
-//			// String email = m.group(0);
-//			// System.out.println(email);
-//			// }
-//			EmailScanner scanner = new EmailScanner(false);
-//			LinkExtractor linkExtractor = LinkExtractor.builder().build();
-//			Iterable<LinkSpan> links = linkExtractor.extractLinks(input);
-//			LinkSpan link = links.iterator().next();
-//			link.getType(); // LinkType.URL
-//			link.getBeginIndex(); // 17
-//			link.getEndIndex(); // 32
-//			input.substring(link.getBeginIndex(), link.getEndIndex()); // "http://test.com"
-//
-//		} catch (TikaException e) {
-//			e.printStackTrace();
-//		}catch (IOException e){
-//			e.printStackTrace();
-//		}
-//		return list;
-//	}
-		
 	public void run() {
 		try {
 			processFiles(_fileList);
@@ -246,45 +130,5 @@ public class OpenNLPER implements Runnable {
 			ex.printStackTrace();
 			System.out.println(ex);
 		}
-	}
-
-	public void process(String document) throws Exception {
-
-		// System.out.println(document);
-		// user instantiates the non static entitylinkerproperty object and
-		// constructs is with a pointer to the prop file they need to use
-		String modelPath = "C:\\apache\\entitylinker\\";
-
-		// input document
-		myNameFinder.clearAdaptiveData();
-		// user splits doc to sentences
-		String[] sentences = sd.sentDetect(document);
-		// get the sentence spans
-		Span[] sentenceSpans = sd.sentPosDetect(document);
-		Span[][] allnamesInDoc = new Span[sentenceSpans.length][];
-		String[][] allTokensInDoc = new String[sentenceSpans.length][];
-
-		for (int sentenceIndex = 0; sentenceIndex < sentences.length; sentenceIndex++) {
-			String[] stringTokens = wordBreaker
-					.tokenize(sentences[sentenceIndex]);
-			Span[] tokenSpans = wordBreaker
-					.tokenizePos(sentences[sentenceIndex]);
-			Span[] spans = myNameFinder.find(stringTokens);
-			allnamesInDoc[sentenceIndex] = spans;
-			allTokensInDoc[sentenceIndex] = stringTokens;
-		}
-
-		// now access the data like this...
-		for (int s = 0; s < sentenceSpans.length; s++) {
-			Span[] namesInSentence = allnamesInDoc[s];
-			String[] tokensInSentence = allTokensInDoc[s];
-			String[] entities = Span.spansToStrings(namesInSentence,
-					tokensInSentence);
-			for (String entity : entities) {
-				// start building up the XML here....
-				System.out.println(entity + " Was in setnence " + s + " @ ");
-			}
-		}
-
 	}
 }
