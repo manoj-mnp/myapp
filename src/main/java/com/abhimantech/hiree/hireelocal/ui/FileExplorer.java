@@ -13,8 +13,6 @@ import com.abhimantech.hiree.hireelocal.SQLiteJDBC;
 import com.abhimantech.hiree.hireelocal.callbacks.FileListFetcherCallback;
 import com.abhimantech.hiree.hireelocal.callbacks.FileProcessingCallback;
 
-import junit.awtui.ProgressBar;
-
 public class FileExplorer implements FileListFetcherCallback,
 		FileProcessingCallback {
 
@@ -36,6 +34,11 @@ public class FileExplorer implements FileListFetcherCallback,
 		fileExplorerDemo.showFileChooserDemo();
 	}
 
+	public void createExplorer(){
+		SQLiteJDBC.initDatatbase();
+		FileExplorer fileExplorerDemo = new FileExplorer();
+		fileExplorerDemo.showFileChooserDemo();
+	}
 	private void prepareGUI() {
 		mainFrame = new JFrame("File Selector");
 
