@@ -37,6 +37,7 @@ import org.apache.tika.sax.ExpandedTitleContentHandler;
 import org.xml.sax.SAXException;
 
 import com.abhimantech.hiree.hireelocal.callbacks.FileProcessingCallback;
+import com.abhimantech.hiree.hireelocal.utils.TokenHelper;
 import com.google.common.io.Files;
 import com.google.i18n.phonenumbers.PhoneNumberMatch;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
@@ -89,6 +90,12 @@ public class OpenNLPER implements Runnable {
 					phoneNum = phoneNum+phones+",";
 				}
 				Matcher matcher = p.matcher(text);
+				for(String find : TokenHelper.SUMMARY_TOKENS){
+					int index = text.indexOf(find);
+					if(index>0){
+						System.out.println("Found keyword:::: "+find);
+					}
+				}
 				Set<String> emails = new HashSet<String>();
 				String emailsStr = "";
 				while (matcher.find()) {
