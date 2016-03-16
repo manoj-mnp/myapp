@@ -36,6 +36,7 @@ import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.sax.ExpandedTitleContentHandler;
 import org.xml.sax.SAXException;
 
+import com.abhimantech.hiree.hireelocal.callbacks.FileProcessingCallback;
 import com.google.common.io.Files;
 import com.google.i18n.phonenumbers.PhoneNumberMatch;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
@@ -49,11 +50,15 @@ public class OpenNLPER implements Runnable {
 	TokenizerME wordBreaker;
 	SentenceDetector sd;
 	static Tika tika = new Tika();
+	FileProcessingCallback _callback;
+	Collection<File> _fileList;
 	
 	private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
 			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
-	public OpenNLPER() {
+	public OpenNLPER(FileProcessingCallback callback,Collection<File> fileList) {
+		this._callback = callback;
+		this._fileList = fileList;
 	}
 
 	public OpenNLPER(String document, SentenceDetector sd, NameFinderME mf,
@@ -66,8 +71,10 @@ public class OpenNLPER implements Runnable {
 	}
 	
 	
-	public static void processFiles(Collection<File> fileList){
+	public void processFiles(Collection<File> fileList){
 		String text = null;
+		int count = 0;
+		int total = fileList.size();
 		for (Iterator<File> iterator = fileList.iterator(); iterator.hasNext();) {
 			File file = (File) iterator.next();
 			System.out.println(file);
@@ -87,6 +94,8 @@ public class OpenNLPER implements Runnable {
 				}
 				System.out.println("email for " + file.getName() + " ::::::: "
 						+ emails.toString());
+				count++;
+				_callback.updateProgress(count, total);
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (TikaException e){
@@ -272,7 +281,7 @@ public class OpenNLPER implements Runnable {
 	
 	public void run() {
 		try {
-			process(doc);
+			processFiles(_fileList);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			System.out.println(ex);

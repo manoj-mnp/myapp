@@ -8,10 +8,13 @@ import java.util.Collection;
 import javax.swing.*;
 
 import com.abhimantech.hiree.hireelocal.FileListParser;
+import com.abhimantech.hiree.hireelocal.OpenNLPER;
 import com.abhimantech.hiree.hireelocal.SQLiteJDBC;
 import com.abhimantech.hiree.hireelocal.callbacks.FileListFetcherCallback;
+import com.abhimantech.hiree.hireelocal.callbacks.FileProcessingCallback;
 
-public class FileExplorer implements FileListFetcherCallback {
+public class FileExplorer implements FileListFetcherCallback,
+		FileProcessingCallback {
 
 	private JFrame mainFrame;
 	private JLabel headerLabel;
@@ -70,11 +73,13 @@ public class FileExplorer implements FileListFetcherCallback {
 				int returnVal = fileDialog.showOpenDialog(mainFrame);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					java.io.File file = fileDialog.getSelectedFile();
-					//statusLabel.setText("File Selected: " + file.getName());
-					Thread t = new Thread(new FileListParser(FileExplorer.this, file.getAbsolutePath()));
+					// statusLabel.setText("File Selected: " + file.getName());
+					Thread t = new Thread(new FileListParser(FileExplorer.this,
+							file.getAbsolutePath()));
 					t.start();
 				} else {
-					statusLabel.setText("File selection operation cancelled by user.");
+					statusLabel
+							.setText("File selection operation cancelled by user.");
 				}
 			}
 		});
@@ -83,6 +88,12 @@ public class FileExplorer implements FileListFetcherCallback {
 	}
 
 	public void callback(Collection<File> fileList) {
-		statusLabel.setText(fileList.size()+" files found");
+		statusLabel.setText(fileList.size() + " files found");
+		Thread t = new Thread(new OpenNLPER(FileExplorer.this, fileList));
+		t.start();
+	}
+
+	public void updateProgress(int present, int total) {
+		System.out.println("present file:::" + present + " total file" + total);
 	}
 }
