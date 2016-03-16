@@ -84,17 +84,21 @@ public class OpenNLPER implements Runnable {
 						"\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b",
 						Pattern.CASE_INSENSITIVE);
 				ArrayList<String> phones = extractPhoneNumber(text);
+				String phoneNum = "";
 				for (String ph : phones) {
-					System.out.println("phone number for " + file.getName() + " " + ph);
+					phoneNum = phoneNum+phones+",";
 				}
 				Matcher matcher = p.matcher(text);
 				Set<String> emails = new HashSet<String>();
+				String emailsStr = "";
 				while (matcher.find()) {
 					emails.add(matcher.group());
+					emailsStr = emailsStr+matcher.group()+",";
 				}
-				System.out.println("email for " + file.getName() + " ::::::: "
-						+ emails.toString());
 				count++;
+				 String sql = "INSERT INTO "+SQLiteJDBC.RESUME_TABLENAME+" (FileName,FilePath,Email,PhoneNum,isProcessed) " +
+		                   "VALUES ('"+file.getName()+"', '"+file.getAbsolutePath()+"', '"+emailsStr+"', '"+phoneNum+"', 1 );";  
+				SQLiteJDBC.inserData(sql);
 				_callback.updateProgress(count, total);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -227,58 +231,7 @@ public class OpenNLPER implements Runnable {
 //		}
 //		return list;
 //	}
-
-	public static void main(String[] args) {
-		try {
-			//toHtml();
-			//extractEmails();
-			// String modelPath =
-			// "/Users/abhimantechnologies/Documents/Parser/sillycat-resume-parse/resources/models/";
-			//
-			// if (tm == null) {
-			// // user does normal namefinder instantiations...
-			// InputStream stream = OpenNLPParserMain.class.getClassLoader()
-			// .getResourceAsStream("models/en-token.bin");
-			// // InputStream stream = new FileInputStream(new File(modelPath +
-			// // "en-token.bin"));
-			// // new SentenceDetectorME(new SentenceModel(new
-			// // FileInputStream(new File(modelPath + "en-sent.zip"))));
-			// tm = new TokenizerModel(stream);
-			// InputStream stream2 = OpenNLPParserMain.class.getClassLoader()
-			// .getResourceAsStream("models/en-ner-person.bin");
-			// // new TokenizerME(tm);
-			// locModel = new TokenNameFinderModel(stream2);
-			// // new NameFinderME(locModel);
-			// }
-			//
-			// System.out.println("getting data");
-			// List<String> docs = getMyDocsFromSomewhere();
-			// System.out.println("\tdone getting data");
-			// // FileWriter fw = new
-			// // FileWriter("C:\\apache\\modelbuilder\\sentences.txt");
-			//
-			// InputStream stream2 = OpenNLPParserMain.class.getClassLoader()
-			// .getResourceAsStream("models/en-sent.bin");
-			//
-			// for (String docu : docs) {
-			// // you could also use the runnable here and launch in a diff
-			// // thread
-			// new OpenNLPER(docu, new SentenceDetectorME(new SentenceModel(
-			// stream2)), new NameFinderME(locModel), new TokenizerME(
-			// tm)).run();
-			//
-			// }
-			//
-			// System.out.println("done");
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.out.println(ex);
-		}
-
-	}
-	
-	
+		
 	public void run() {
 		try {
 			processFiles(_fileList);
