@@ -13,6 +13,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<tika.version>1.10</tika.version>
+		<java-version>1.7</java-version>
 	</properties>
 
 	<dependencies>
@@ -68,14 +69,40 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.4</version>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<compilerArgument>-Xlint:all</compilerArgument>
+					<showWarnings>true</showWarnings>
+					<source>1.7</source>
+					<target>1.7</target>
+					<compilerArguments>
+						<encoding>UTF-8</encoding>
+					</compilerArguments>
+					<showDeprecation>true</showDeprecation>
+					<verbose>true</verbose>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>attached</goal>
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>com.abhimantech.hiree.hireelocal.App</mainClass>
+							<mainClass>com.abhimantech.hiree.hireelocal.ui.FileExplorer</mainClass>
 						</manifest>
 					</archive>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
 				</configuration>
 			</plugin>
 		</plugins>
