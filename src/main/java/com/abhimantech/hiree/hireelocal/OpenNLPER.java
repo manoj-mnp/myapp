@@ -268,7 +268,6 @@ public class OpenNLPER implements Runnable {
 
 	}
 
-	@Override
 	public void run() {
 		try {
 			process(doc);
