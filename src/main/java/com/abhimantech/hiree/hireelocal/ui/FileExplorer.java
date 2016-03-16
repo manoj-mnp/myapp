@@ -62,6 +62,10 @@ public class FileExplorer implements FileListFetcherCallback,
 		
 		progressBar= new JProgressBar(0, 100);
 		progressBar.setBounds(110, 80, 160, 25);
+        progressBar.setStringPainted(true);
+        progressBar.setValue(0);
+        progressBar.setString("");
+        progressBar.setVisible(false);
 		
 		mainFrame.add(headerLabel);
 		mainFrame.add(controlPanel);
@@ -97,9 +101,7 @@ public class FileExplorer implements FileListFetcherCallback,
 	}
 
 	public void callback(Collection<File> fileList) {
-		progressBar.setPreferredSize(new Dimension(200, 30));
-        progressBar.setStringPainted(true);
-        progressBar.setValue(0);
+		progressBar.setVisible(true);
 		statusLabel.setText(fileList.size() + " files found");
 		Thread t = new Thread(new OpenNLPER(FileExplorer.this, fileList));
 		t.start();
@@ -111,6 +113,7 @@ public class FileExplorer implements FileListFetcherCallback,
 		     SwingUtilities.invokeLater(new Runnable() {
 		       public void run() {
 		    	   progressBar.setValue(progress);
+		    	   progressBar.setString(present + "/" + total);
 		       }
 		     });
 		   }
