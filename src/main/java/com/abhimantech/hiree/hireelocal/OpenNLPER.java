@@ -81,22 +81,17 @@ public class OpenNLPER implements Runnable {
 					phoneNum = phoneNum+phones+",";
 				}
 				Matcher matcher = p.matcher(text);
-				for(String find : TokenHelper.SUMMARY_TOKENS){
-					int index = text.indexOf(find);
-					if(index>0){
-						System.out.println("Found keyword:::: "+find);
-					}
-				}
 				Set<String> emails = new HashSet<String>();
 				String emailsStr = "";
 				while (matcher.find()) {
 					emails.add(matcher.group());
 					emailsStr = emailsStr+matcher.group()+",";
 				}
+				OpenNLPSentenceMain.processSentence(text);
 				count++;
 				 String sql = "INSERT INTO "+SQLiteJDBC.RESUME_TABLENAME+" (FileName,FilePath,Email,PhoneNum,resumeTxt,isProcessed) " +
 		                   "VALUES ('"+file.getName()+"', '"+file.getAbsolutePath()+"', '"+emailsStr+"', '"+phoneNum+"', '', 1 );";  
-				SQLiteJDBC.inserData(sql);
+				//SQLiteJDBC.inserData(sql);
 				_callback.updateProgress(count, total);
 			} catch (IOException e) {
 				e.printStackTrace();
