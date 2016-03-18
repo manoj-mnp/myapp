@@ -177,5 +177,6 @@ public class OpenNLPSentenceMain {
 			System.out.println(data.printString());
 		}
 		System.out.println("\n\n");
+		
 	}	
 }

@@ -30,7 +30,7 @@ public class HireeRetrofit {
     public static final String SERVER_PREVIEW = "preview.hiree.com";
     // Change: address of the dev server
     public static final String SERVER_DEV = "stagemnp.com";
-    public static final String SERVER_DEV_LOCAL = "localhost:8983";
+    public static final String SERVER_DEV_LOCAL = "192.168.0.143:8983";
     private static final String API_URL_REST = "/app";
     public static String API_URL = "https://";
     public static String API_URL_NORMAL = "http://";

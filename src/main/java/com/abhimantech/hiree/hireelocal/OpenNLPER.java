@@ -5,14 +5,28 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Paths;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
+import java.nio.file.Paths;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import javax.xml.bind.DatatypeConverter;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.sax.SAXTransformerFactory;
@@ -71,9 +85,32 @@ public class OpenNLPER implements Runnable {
 		String text = null;
 		int count = 0;
 		int total = fileList.size();
+		MessageDigest md = null;
+		try {
+			md = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		for (Iterator<File> iterator = fileList.iterator(); iterator.hasNext();) {
 			File file = (File) iterator.next();
-			System.out.println(file);
+			
+			try 
+			{
+//				InputStream is = java.nio.file.Files.newInputStream(Paths.get(file.getAbsolutePath()));
+//			    DigestInputStream dis = new DigestInputStream(is, md);
+			    md.update(java.nio.file.Files.readAllBytes(Paths.get(file.getAbsolutePath())));
+			  /* Read decorated stream (dis) to EOF as normal... */
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			byte[] digest = md.digest();
+			System.out.println(file+ "CheckSum: " + Arrays.toString(digest));
+			String digestInHex = DatatypeConverter.printHexBinary(digest).toUpperCase();
+			digestInHex = TokenHelper.MD5(digestInHex+UUID.randomUUID() + 22567);
+			
+			System.out.println("MD5: " + digestInHex);
 			try {
 				text = tika.parseToString(file);
 				Pattern p = Pattern.compile(
@@ -91,7 +128,7 @@ public class OpenNLPER implements Runnable {
 					emails.add(matcher.group());
 					emailsStr = emailsStr+matcher.group()+",";
 				}
-				DocumentObject doc = new DocumentObject(count, emailsStr, phoneNum, text);
+				DocumentObject doc = new DocumentObject(digestInHex, emailsStr, phoneNum, text, digestInHex, file.getName());
 				DocumentAddRequest request = new DocumentAddRequest(doc, 1.0, true, 1000);
 				SolrDocumentRequest docReq = new SolrDocumentRequest(request);
 				HireeRetrofit.getApi().solrUpdateDocument(docReq, new Callback<Response>() {

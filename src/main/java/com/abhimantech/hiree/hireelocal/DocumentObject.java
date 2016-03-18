@@ -7,7 +7,7 @@ public class DocumentObject {
 
 	@SerializedName("id")
 	@Expose
-	private Integer id;
+	private String id;
 	@SerializedName("email")
 	@Expose
 	private String email;
@@ -17,23 +17,28 @@ public class DocumentObject {
 	@SerializedName("resumeTxt")
 	@Expose
 	private String resumeTxt;
+	@SerializedName("checksum")
+	@Expose
+	private String checksum;
+	@SerializedName("filename")
+	@Expose
+	private String filename;
 	
 	
-	
-	public DocumentObject(Integer id, String email, String phone,
-			String resumeTxt) {
+	public DocumentObject(String id, String email, String phone, String resumeTxt, String checksum, String filename) {
 		super();
 		this.id = id;
 		this.email = email;
 		this.phone = phone;
 		this.resumeTxt = resumeTxt;
+		this.checksum = checksum;
+		this.filename = filename;
 	}
 	
-	
-	public Integer getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	public String getEmail() {
@@ -53,6 +58,22 @@ public class DocumentObject {
 	}
 	public void setResumeTxt(String resumeTxt) {
 		this.resumeTxt = resumeTxt;
+	}
+
+	public String getChecksum() {
+		return checksum;
+	}
+
+	public void setChecksum(String checksum) {
+		this.checksum = checksum;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
 	}
 	
 	
