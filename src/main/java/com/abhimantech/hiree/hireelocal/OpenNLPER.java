@@ -36,6 +36,10 @@ import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.sax.ExpandedTitleContentHandler;
 import org.xml.sax.SAXException;
 
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
 import com.abhimantech.hiree.hireelocal.callbacks.FileProcessingCallback;
 import com.abhimantech.hiree.hireelocal.utils.TokenHelper;
 import com.google.common.io.Files;
@@ -87,7 +91,22 @@ public class OpenNLPER implements Runnable {
 					emails.add(matcher.group());
 					emailsStr = emailsStr+matcher.group()+",";
 				}
-				OpenNLPSentenceMain.processSentence(text);
+				DocumentObject doc = new DocumentObject(count, emailsStr, phoneNum, text);
+				DocumentAddRequest request = new DocumentAddRequest(doc, 1.0, true, 1000);
+				SolrDocumentRequest docReq = new SolrDocumentRequest(request);
+				HireeRetrofit.getApi().solrUpdateDocument(docReq, new Callback<Response>() {
+					
+					public void success(Response arg0, Response arg1) {
+						// TODO Auto-generated method stub
+					
+					}
+					
+					public void failure(RetrofitError arg0) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
+				//OpenNLPSentenceMain.processSentence(text);
 				count++;
 				 String sql = "INSERT INTO "+SQLiteJDBC.RESUME_TABLENAME+" (FileName,FilePath,Email,PhoneNum,resumeTxt,isProcessed) " +
 		                   "VALUES ('"+file.getName()+"', '"+file.getAbsolutePath()+"', '"+emailsStr+"', '"+phoneNum+"', '', 1 );";  

@@ -9,10 +9,11 @@ import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.RequestInterceptor.RequestFacade;
 import retrofit.client.OkClient;
+import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.POST;
-
 import retrofit.Callback;
+
 import com.squareup.okhttp.OkHttpClient;
 
 public class HireeRetrofit {
@@ -22,14 +23,14 @@ public class HireeRetrofit {
     public static final int TYPE_PREVIEW = 3;
 
     // Change: the type of server here, production or dev
-    public static final int TYPE = TYPE_PRODUCTION;
+    public static final int TYPE = TYPE_DEV_LOCAL;
 
     // Change: address of the production server
     public static final String SERVER_PRODUCTION = "hiree.com";
     public static final String SERVER_PREVIEW = "preview.hiree.com";
     // Change: address of the dev server
     public static final String SERVER_DEV = "stagemnp.com";
-    public static final String SERVER_DEV_LOCAL = "192.168.0.143:8080/mvc";
+    public static final String SERVER_DEV_LOCAL = "localhost:8983";
     private static final String API_URL_REST = "/app";
     public static String API_URL = "https://";
     public static String API_URL_NORMAL = "http://";
@@ -101,9 +102,13 @@ public class HireeRetrofit {
         LOGIN_URL = API_URL + server + "/app/login.rest";
         API_URL += server;
     }
+    
 
     public interface MNPApiInterface {
     	 @POST("/app/login.rest")
          void login(@Body LoginRequest loginRequest, Callback<LoginResponse> loginResponseCallback);
+    	 
+    	 @POST("/solr/hireelocal_shard1_replica1/update?wt=json")
+         void solrUpdateDocument(@Body SolrDocumentRequest docRequest, Callback<Response> response);
     }
 }
