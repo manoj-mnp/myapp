@@ -21,9 +21,15 @@ public class FileExplorer implements FileListFetcherCallback,
 	private JLabel statusLabel;
 	private JPanel controlPanel;
 	private JProgressBar progressBar;
+	private String jSessionId;
 	
 	private volatile int progress = 0;
 
+	public FileExplorer(String jSessionId) {
+		this.jSessionId = jSessionId;
+		prepareGUI();
+	}
+	
 	public FileExplorer() {
 		prepareGUI();
 	}
@@ -36,8 +42,9 @@ public class FileExplorer implements FileListFetcherCallback,
 
 	public void createExplorer(){
 		SQLiteJDBC.initDatatbase();
-		FileExplorer fileExplorerDemo = new FileExplorer();
-		fileExplorerDemo.showFileChooserDemo();
+//		FileExplorer fileExplorerDemo = new FileExplorer();
+//		fileExplorerDemo.showFileChooserDemo();
+		showFileChooserDemo();
 	}
 	private void prepareGUI() {
 		mainFrame = new JFrame("File Selector");
@@ -57,7 +64,11 @@ public class FileExplorer implements FileListFetcherCallback,
 		});
 		headerLabel = new JLabel("", JLabel.CENTER);
 		statusLabel = new JLabel("", JLabel.CENTER);
-
+		if(jSessionId != null){
+			System.out.println(jSessionId);
+			statusLabel
+			.setText("jSessionId: " + jSessionId);
+		}
 		statusLabel.setSize(350, 100);
 
 		controlPanel = new JPanel();
@@ -79,7 +90,6 @@ public class FileExplorer implements FileListFetcherCallback,
 
 	private void showFileChooserDemo() {
 		headerLabel.setText("Please select a folder: ");
-
 		final JFileChooser fileDialog = new JFileChooser();
 		fileDialog.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fileDialog.setAcceptAllFileFilterUsed(false);

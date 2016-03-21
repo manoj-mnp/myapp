@@ -13,6 +13,14 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import com.abhimantech.hiree.hireelocal.HireeRetrofit;
+import com.abhimantech.hiree.hireelocal.LoginRequest;
+import com.abhimantech.hiree.hireelocal.LoginResponse;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
 
 public class Login extends JFrame {
 
@@ -27,14 +35,14 @@ public class Login extends JFrame {
 	
 	Login(){
 	super("Login Autentification");
-	setSize(300,200);
-	setLocation(500,280);
+	setSize(400,250);
+	setLocation(400,280);
 	panel.setLayout (null); 
 	
 	
-	txuser.setBounds(70,30,150,20);
-	pass.setBounds(70,65,150,20);
-	blogin.setBounds(110,100,80,20);
+	txuser.setBounds(70,30,250,30);
+	pass.setBounds(70,70,250,30);
+	blogin.setBounds(150,110,90,30);
 	
 	panel.add(blogin);
 	panel.add(txuser);
@@ -49,20 +57,36 @@ public class Login extends JFrame {
 	public void actionlogin(){
 		blogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				String puname = txuser.getText();
+				String puname = txuser.getText().trim();
 				String ppaswd = pass.getText();
-				if(puname.equals("test") && ppaswd.equals("12345")) {
-					FileExplorer fileExplorer =new FileExplorer();
-					fileExplorer.createExplorer();
-					dispose();
-				}else 
-				{
-					JOptionPane.showMessageDialog(null,"Wrong Password / Username");
-					txuser.setText("");
-					pass.setText("");
-					txuser.requestFocus();
-				}
-				
+//				if(puname.equals("test") && ppaswd.equals("12345")) {
+				HireeRetrofit.getApi().login(new LoginRequest(puname, ppaswd, "SIM_DEVICE", "0000000000"), new Callback<LoginResponse>() {
+					@Override
+					public void success(LoginResponse arg0, Response arg1) {
+						// TODO Auto-generated method stub
+						if(arg0.getStatus().equals("Success")){
+							String sessionId = arg0.getSessionId();
+							FileExplorer fileExplorer =new FileExplorer(sessionId);
+							fileExplorer.createExplorer();
+							dispose();
+						}
+						else{
+							JOptionPane.showMessageDialog(null,"Wrong Password / Username");
+							txuser.setText("");
+							pass.setText("");
+							txuser.requestFocus();
+						}
+					}
+					public void failure(RetrofitError arg0) {
+						// TODO Auto-generated method stub
+						JOptionPane.showMessageDialog(null,"Wrong Password / Username");
+						txuser.setText("");
+						pass.setText("");
+						txuser.requestFocus();
+					}
+
+					
+				});
 			}
 		});
 	}
