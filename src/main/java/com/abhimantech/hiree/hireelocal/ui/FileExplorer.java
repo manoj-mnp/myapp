@@ -8,6 +8,7 @@ import java.util.Collection;
 import javax.swing.*;
 
 import com.abhimantech.hiree.hireelocal.FileListParser;
+import com.abhimantech.hiree.hireelocal.LoginResponse;
 import com.abhimantech.hiree.hireelocal.OpenNLPER;
 import com.abhimantech.hiree.hireelocal.SQLiteJDBC;
 import com.abhimantech.hiree.hireelocal.callbacks.FileListFetcherCallback;
@@ -21,12 +22,12 @@ public class FileExplorer implements FileListFetcherCallback,
 	private JLabel statusLabel;
 	private JPanel controlPanel;
 	private JProgressBar progressBar;
-	private String jSessionId;
+	private LoginResponse loginResponse;
 	
 	private volatile int progress = 0;
 
-	public FileExplorer(String jSessionId) {
-		this.jSessionId = jSessionId;
+	public FileExplorer(LoginResponse loginResponse) {
+		this.loginResponse = loginResponse;
 		prepareGUI();
 	}
 	
@@ -64,10 +65,10 @@ public class FileExplorer implements FileListFetcherCallback,
 		});
 		headerLabel = new JLabel("", JLabel.CENTER);
 		statusLabel = new JLabel("", JLabel.CENTER);
-		if(jSessionId != null){
-			System.out.println(jSessionId);
+		if(loginResponse != null){
+			if(loginResponse.getSessionId() != null)
 			statusLabel
-			.setText("jSessionId: " + jSessionId);
+			.setText("jSessionId: " + loginResponse.getSessionId());
 		}
 		statusLabel.setSize(350, 100);
 

@@ -65,8 +65,7 @@ public class Login extends JFrame {
 					public void success(LoginResponse arg0, Response arg1) {
 						// TODO Auto-generated method stub
 						if(arg0.getStatus().equals("Success")){
-							String sessionId = arg0.getSessionId();
-							FileExplorer fileExplorer =new FileExplorer(sessionId);
+							FileExplorer fileExplorer =new FileExplorer(arg0);
 							fileExplorer.createExplorer();
 							dispose();
 						}
